@@ -102,6 +102,6 @@ def extractCornersFromDataset(dataset, detector, multithreading=False, numProces
         print "\r  Extracted corners for %d images (of %d images)                              " % (len(targetObservations), numImages)
 
     #close all opencv windows that might be open
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
     
     return targetObservations

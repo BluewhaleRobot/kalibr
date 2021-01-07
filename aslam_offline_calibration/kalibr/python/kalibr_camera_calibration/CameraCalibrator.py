@@ -363,7 +363,7 @@ def getReprojectionErrorStatistics(all_rerrs):
         raise RuntimeError("rerrs has invalid dimension")
 
     gc.disable() #append speed up
-    rerr_matrix=list();
+    rerr_matrix=list()
     for view_id, view_rerrs in enumerate(all_rerrs):
         if view_rerrs is not None: #if cam sees target in this view
             for rerr in view_rerrs:
@@ -429,25 +429,23 @@ def getAllPointStatistics(cself, cam_id):
 
 def plotPolarError(cself, cam_id, fno=1, clearFigure=True, stats=None, noShow=False, title=""):
     if stats is None:
-        stats = getAllPointStatistics(cself, cam_id)
+        stats = getAllPointStatistics(cself, cam_id)    
     angleError = np.array([ [ np.degrees(s.polarAngle), math.sqrt(s.squaredError)] for s in stats ])
     # sort by polar angle
     sae = angleError[ angleError[:,0].argsort() ]
-    
     # Now plot
     f = pl.figure(fno)
     if clearFigure:
         f.clf()
-    f.suptitle(title)
-        
+    f.suptitle(title)  
     pl.subplot(121)
     pl.plot(sae[:,0],sae[:,1],'bx-')
-    pl.grid('on')
+    pl.grid(True)
     pl.xlabel('polar angle (deg)')
     pl.ylabel('reprojection error (pixels)')
     pl.subplot(122)
     pl.hist(sae[:,0])
-    pl.grid('on')
+    pl.grid(True)
     pl.xlabel('polar angle (deg)')
     pl.ylabel('count')
     if not noShow:
@@ -467,12 +465,12 @@ def plotAzumithalError(cself, cam_id, fno=1, clearFigure=True, stats=None, noSho
     
     pl.subplot(121)
     pl.plot(sae[:,0],sae[:,1],'bx-')
-    pl.grid('on')
+    pl.grid(True)
     pl.xlabel('azumithal angle (deg)')
     pl.ylabel('reprojection error (pixels)')
     pl.subplot(122)
     pl.hist(sae[:,0])
-    pl.grid('on')
+    pl.grid(True)
     pl.xlabel('azumithal angle (deg)')
     pl.ylabel('count')
     if not noShow:
@@ -512,7 +510,7 @@ def plotAllReprojectionErrors(cself, cam_id, fno=1, noShow=False, clearFigure=Tr
             pl.plot(rerrs[:,0], rerrs[:,1], 'x', lw=3, mew=3, color=color)
 
     pl.axis('equal')
-    pl.grid('on')
+    pl.grid(True)
     pl.xlabel('error x (pix)')
     pl.ylabel('error y (pix)')
 
@@ -745,7 +743,7 @@ def plotOutlierCorners(cself, removedOutlierCorners, fno=1, clearFigure=True, ti
 def generateReport(cself, filename="report.pdf", showOnScreen=True, graph=None, removedOutlierCorners=None):
     #plotter
     plotter = PlotCollection.PlotCollection("Calibration report")
-
+     
     figs = list()    
     #plot graph
     if graph is not None:
@@ -754,7 +752,7 @@ def generateReport(cself, filename="report.pdf", showOnScreen=True, graph=None, 
         graph.plotGraphPylab(fno=f.number, noShow=True, title=title)
         plotter.add_figure("Obs. graph", f)
         figs.append(f)
-        
+
     #rig geometry
     if len(cself.cameras)>1:
         f=pl.figure(1002)
@@ -762,12 +760,12 @@ def generateReport(cself, filename="report.pdf", showOnScreen=True, graph=None, 
         plotCameraRig(cself.baselines, fno=f.number, clearFigure=False, title=title)
         plotter.add_figure(title, f)
         figs.append(f)
-        
+
     #plot for each camera
     for cidx, cam in enumerate(cself.cameras):
         f = pl.figure(cidx*10+1)
         title="cam{0}: polar error".format(cidx)
-        plotPolarError(cself, cidx, fno=f.number, noShow=True, title=title)
+        plotPolarError(cself, cidx, fno=f.number, clearFigure=True, noShow=True, title=title)
         plotter.add_figure(title, f)
         figs.append(f)
         f = pl.figure(cidx*10+2)
@@ -789,7 +787,7 @@ def generateReport(cself, filename="report.pdf", showOnScreen=True, graph=None, 
             plotOutlierCorners(cself, removedOutlierCorners, fno=f.number, title=title)
             plotter.add_figure("Outlier corners", f)
             figs.append(f)
-            
+ 
     #save to pdf
     pdf=PdfPages(filename)
     for fig in figs:
@@ -799,6 +797,8 @@ def generateReport(cself, filename="report.pdf", showOnScreen=True, graph=None, 
     
     if showOnScreen:
         plotter.show()  
+
+    pl.close('all')
     
 def plotCorners(gridobs, fno=1, cornerlist=None, clearFigure=True, plotImage=True, color=None, subplot=0):
     if color is None:
